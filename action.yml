@@ -1,0 +1,35 @@
+name: Mark PR as Draft
+description: Converts the given pull request to a draft
+branding:
+  icon: git-pull-request
+  color: gray-dark
+
+inputs:
+  token:
+    required: true
+    description: Github Token used to make API request to mutate pull requests
+    default: ${{ github.token }}
+  pull-request-node-id:
+    required: true
+    description: GitHub pull request node id
+    default: ${{ github.event.pull_request.node_id }}
+
+
+runs:
+  using: composite
+  steps:
+    - name: Mark as draft
+      shell: bash
+      run: |
+        echo ${{ inputs.token }} | gh auth login --with-token
+        gh api graphql -F id=${{ inputs.pull_request_node_id }}  -f query='
+          mutation($id: String!) {
+            convertPullRequestToDraft(input: { pullRequestId: $id }) {
+              pullRequest {
+                id
+                number
+                isDraft
+              }
+            }
+          }
+        '
