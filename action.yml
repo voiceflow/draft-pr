@@ -22,7 +22,7 @@ runs:
       shell: bash
       run: |
         echo ${{ inputs.token }} | gh auth login --with-token
-        gh api graphql -F id=${{ inputs.pull_request_node_id }}  -f query='
+        gh api graphql -F id=${{ inputs.pull-request-node-id }}  -f query='
           mutation($id: String!) {
             convertPullRequestToDraft(input: { pullRequestId: $id }) {
               pullRequest {
